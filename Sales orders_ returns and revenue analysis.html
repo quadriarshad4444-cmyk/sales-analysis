@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sales orders: returns and revenue analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#16202e;--mut:#5b6678;--line:#dfe3ea;--hi:#d9381e;--lo:#c5cbd6;--c1:#1f8a70;--c2:#2f6fd0;--c3:#8a93a3;--c4:#d3d8e0;--heat:217,56,30;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151d;--card:#171e29;--ink:#e8ecf2;--mut:#9aa5b6;--line:#283142;--hi:#f0563b;--lo:#3a4558;--c1:#2bb08f;--c2:#5b92e8;--c3:#6f7a8c;--c4:#3d4759;--heat:240,86,59}}
+:root[data-theme="dark"]{--bg:#10151d;--card:#171e29;--ink:#e8ecf2;--mut:#9aa5b6;--line:#283142;--hi:#f0563b;--lo:#3a4558;--c1:#2bb08f;--c2:#5b92e8;--c3:#6f7a8c;--c4:#3d4759;--heat:240,86,59}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:28px 20px 40px}
+h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 6px}
+.lead{font-size:clamp(24px,4vw,34px);line-height:1.2;font-weight:500;margin:0 0 24px;max-width:24em}
+.lead b{color:var(--hi);font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:14px}
+.stats div{padding:14px 18px;border-left:1px solid var(--line)}
+.stats div:first-child{border-left:0}
+.sl{font-size:13px;color:var(--mut);margin:0}
+.sv{font-size:26px;font-weight:500;margin:2px 0 0;font-variant-numeric:tabular-nums}
+.ss{font-size:12px;color:var(--mut);margin:0}
+.g{display:grid;gap:14px;margin-bottom:14px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.c h2{font-size:14px;font-weight:500;margin:0 0 8px}
+.lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--mut);margin-bottom:6px}
+.lg span{display:flex;align-items:center;gap:5px}
+.lg i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.w{position:relative;width:100%}
+.sc{overflow-x:auto}
+table{width:100%;border-collapse:separate;border-spacing:2px;table-layout:fixed;font-size:12px;font-variant-numeric:tabular-nums;min-width:300px}
+th{font-weight:400;color:var(--mut);padding:4px 2px;text-align:center}
+th.r,td.r{text-align:left;color:var(--mut);width:28%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 2px}
+td{text-align:center;padding:6px 2px;border-radius:4px}
+.n{font-size:12px;color:var(--mut);margin:8px 0 0}
+footer{font-size:12px;color:var(--mut);max-width:60em;margin-top:6px}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats div:nth-child(3){border-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--line)}.g{grid-template-columns:minmax(0,1fr)!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>Sales orders: returns and revenue analysis</h1>
+<p class="lead"><b>55%</b> of sales value, ₹17.56 lakh of ₹31.89 lakh, sits in returned or cancelled orders.</p>
+<section class="stats" aria-label="Headline numbers">
+<div><p class="sl">Total sales</p><p class="sv">₹3,189,270</p><p class="ss">After price correction</p></div>
+<div><p class="sl">Total orders</p><p class="sv">309</p><p class="ss">With a recorded status</p></div>
+<div><p class="sl">Return rate</p><p class="sv">47%</p><p class="ss">145 returned orders</p></div>
+<div><p class="sl">Lost revenue</p><p class="sv">₹1,755,637</p><p class="ss">Returned and cancelled</p></div>
+</section>
+<div class="g" style="grid-template-columns:minmax(0,3fr) minmax(0,2fr)">
+<div class="c"><h2>Return rate by product (%)</h2><div class="w" style="height:280px"><canvas id="cP" role="img" aria-label="Bar chart of return rate by product; headphones highest at 61%, mechanical keyboard lowest at 38%">Headphones 61.0, webcam hd 53.1, desk lamp 51.4, laptop stand 48.7, monitor 24in 41.2, wireless mouse 40.5, usb-c hub 38.2, mechanical keyboard 38.1.</canvas></div></div>
+<div class="c"><h2>Order status</h2>
+<div class="lg"><span><i style="background:var(--hi)"></i>Returned 145</span><span><i style="background:var(--c1)"></i>Delivered 69</span><span><i style="background:var(--c3)"></i>Cancelled 36</span><span><i style="background:var(--c2)"></i>Shipped 30</span><span><i style="background:var(--c4)"></i>Pending 29</span></div>
+<div class="w" style="height:210px"><canvas id="cS" role="img" aria-label="Donut chart of order status: returned 145, delivered 69, cancelled 36, shipped 30, pending 29">Returned 145, delivered 69, cancelled 36, shipped 30, pending 29.</canvas></div></div>
+</div>
+<div class="g" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+<div class="c"><h2>Return rate by region (%)</h2><div class="w" style="height:170px"><canvas id="cR" role="img" aria-label="Bar chart of return rate by region; south highest at 50%">South 50.0, west 48.4, east 44.7, north 44.6.</canvas></div></div>
+<div class="c"><h2>Return rate by payment (%)</h2><div class="w" style="height:190px"><canvas id="cM" role="img" aria-label="Bar chart of return rate by payment method; net banking highest at 56.9%, credit card lowest at 37.3%">Net banking 56.9, COD 46.2, cash 46.2, UPI 45.9, credit card 37.3.</canvas></div></div>
+<div class="c"><h2>Return rate by sales rep (%)</h2><div class="w" style="height:190px"><canvas id="cE" role="img" aria-label="Bar chart of return rate by sales rep; Rohan Patil highest at 53.1%, Sneha Kulkarni lowest at 35%">Rohan 53.1, Priya 50.0, Amit 48.2, Vikram 48.2, Sneha 35.0.</canvas></div></div>
+</div>
+<div class="c g"><h2 style="margin:0">Order status by product (% of each product's orders)</h2><div class="sc"><table id="t1"></table></div><p class="n" style="margin:0">Each row adds up to 100%. Returned is the largest share for every product.</p></div>
+<div class="g" style="grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)">
+<div class="c"><h2>Payment method by region (% of all orders)</h2><div class="sc"><table id="t2"></table></div><p class="n">COD leads in every region.</p></div>
+<div class="c"><h2>Product by payment method (% of all orders)</h2><div class="sc"><table id="t3"></table></div><p class="n">Headphones and mechanical keyboard with COD are the largest pairs.</p></div>
+</div>
+<footer>Return rates use the 309 orders that have a recorded status. Eight unit prices recorded at 100 times their true value were corrected before calculating revenue. Built with Python (pandas, seaborn) and SQL Server.</footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const cs=getComputedStyle(document.documentElement),v=n=>cs.getPropertyValue(n).trim();
+const ink=v('--ink'),mut=v('--mut'),card=v('--card'),HI=v('--hi'),LO=v('--lo');
+if(window.Chart){
+const vl={id:'vl',afterDatasetsDraw(ch){const x=ch.ctx;ch.getDatasetMeta(0).data.forEach((b,i)=>{x.save();x.fillStyle=ink;x.font='12px "IBM Plex Sans",sans-serif';x.textAlign='left';x.textBaseline='middle';x.fillText(ch.data.datasets[0].data[i].toFixed(1)+'%',b.x+6,b.y);x.restore();});}};
+function bar(id,labels,data){
+ new Chart(document.getElementById(id),{type:'bar',plugins:[vl],
+ data:{labels:labels,datasets:[{data:data,backgroundColor:data.map((d,i)=>i===0?HI:LO),borderRadius:{topRight:4,bottomRight:4},barThickness:16}]},
+ options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},
+ plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x.toFixed(1)+'%'}}},
+ scales:{x:{display:false,min:0,max:70},y:{grid:{display:false},border:{display:false},ticks:{color:mut,font:{size:12}}}}}});
+}
+bar('cP',['headphones','webcam hd','desk lamp','laptop stand','monitor 24in','wireless mouse','usb-c hub','mech. keyboard'],[60.98,53.06,51.43,48.65,41.18,40.54,38.24,38.10]);
+bar('cR',['south','west','east','north'],[50.00,48.39,44.74,44.59]);
+bar('cM',['net banking','cod','cash','upi','credit card'],[56.92,46.24,46.15,45.90,37.25]);
+bar('cE',['Rohan','Priya','Amit','Vikram','Sneha'],[53.13,50.00,48.15,48.15,35.00]);
+new Chart(document.getElementById('cS'),{type:'doughnut',data:{labels:['Returned','Delivered','Cancelled','Shipped','Pending'],datasets:[{data:[145,69,36,30,29],backgroundColor:[HI,v('--c1'),v('--c3'),v('--c2'),v('--c4')],borderColor:card,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false}}}});
+}
+const rgb=v('--heat');
+function heat(id,cols,rows,m,max,hl){
+ let h='<tr><th class="r"></th>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr>';
+ m.forEach((r,i)=>{h+='<tr><td class="r">'+rows[i]+'</td>'+r.map((x,j)=>{
+  const a=(0.08+0.6*Math.min(x/max,1)).toFixed(2);
+  return '<td style="'+(hl===j?'font-weight:500;':'')+'background:rgba('+rgb+','+a+')">'+x.toFixed(1)+'</td>';}).join('')+'</tr>';});
+ document.getElementById(id).innerHTML=h;
+}
+const P=['desk lamp','headphones','laptop stand','mech. keyboard','monitor 24in','usb-c hub','webcam hd','wireless mouse'];
+heat('t1',['Cancelled','Delivered','Pending','Returned','Shipped'],P,
+ [[20.0,20.0,2.9,51.0,5.7],[12.0,22.0,2.4,61.0,2.4],[11.0,19.0,16.0,49.0,5.4],[7.1,19.0,14.0,38.0,21.0],[18.0,15.0,15.0,41.0,12.0],[15.0,24.0,5.9,38.0,18.0],[4.1,29.0,10.0,53.0,4.1],[11.0,30.0,8.1,41.0,11.0]],61,3);
+heat('t2',['East','North','South','West'],['cash','cod','credit card','net banking','upi'],
+ [[2.3,3.2,2.3,4.9],[7.1,7.8,6.5,8.7],[5.8,3.9,2.3,4.5],[3.9,4.2,5.2,7.8],[5.5,4.9,5.2,4.2]],8.7);
+heat('t3',['Cash','COD','Card','Net bank','UPI'],P,
+ [[1.3,3.2,1.3,3.6,1.9],[1.6,5.2,1.3,2.9,2.3],[1.9,3.6,1.6,2.6,2.3],[1.0,4.9,1.6,2.9,3.2],[1.6,3.2,2.6,1.3,2.3],[1.6,3.2,2.3,1.3,2.6],[2.6,3.9,3.2,3.2,2.9],[1.0,2.9,2.6,3.2,2.3]],5.2);
+</script>
+</body>
+</html>

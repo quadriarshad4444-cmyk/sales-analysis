@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>E-commerce performance: revenue, losses and ratings</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f1;--card:#fff;--ink:#12201c;--mut:#566761;--line:#d9e3df;--a:#0f766e;--b:#d97706;--r:#be123c;--lo:#c6d3ce;--g:#8da39c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1311;--card:#111d1a;--ink:#e6f0ed;--mut:#8fa59e;--line:#1f302c;--a:#2dd4bf;--b:#fbbf24;--r:#fb7185;--lo:#2b3f3a;--g:#6f877f}}
+:root[data-theme="dark"]{--bg:#0a1311;--card:#111d1a;--ink:#e6f0ed;--mut:#8fa59e;--line:#1f302c;--a:#2dd4bf;--b:#fbbf24;--r:#fb7185;--lo:#2b3f3a;--g:#6f877f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:28px 20px 44px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.top h1{margin:0;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--a)}
+.top span{font-size:12px;color:var(--mut)}
+.lead{font-size:clamp(26px,4.4vw,40px);line-height:1.12;font-weight:800;margin:0 0 22px;max-width:20em;letter-spacing:-.02em}
+.lead em{font-style:normal;color:var(--r)}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:34px}
+.t{background:var(--card);border-radius:12px;padding:14px 16px 14px;border-top:3px solid var(--a)}
+.t.b{border-top-color:var(--b)}.t.r{border-top-color:var(--r)}.t.g{border-top-color:var(--g)}
+.t p{margin:0}.tl{font-size:12px;color:var(--mut);font-weight:600}
+.tv{font-size:28px;font-weight:800;line-height:1.25;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ts{font-size:12px;color:var(--mut)}
+.sec{margin-bottom:34px}
+.sh{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.sn{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.sh h2{margin:0;font-size:clamp(18px,2.6vw,22px);line-height:1.25;font-weight:800;letter-spacing:-.01em}
+.g{display:grid;gap:12px}
+.c{background:var(--card);border-radius:12px;padding:14px 16px;min-width:0}
+.c h3{font-size:13px;font-weight:600;color:var(--mut);margin:0 0 8px}
+.w{position:relative;width:100%}
+.n{font-size:12px;color:var(--mut);margin:8px 0 0}
+.lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--mut);margin-bottom:8px}
+.lg span{display:flex;align-items:center;gap:5px}
+.lg i{width:10px;height:10px;border-radius:50%;display:inline-block}
+footer{font-size:12px;color:var(--mut);max-width:60em;border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:760px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.g{grid-template-columns:minmax(0,1fr)!important}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><h1>E-commerce performance</h1><span>1,053 valid orders from 1,472 records</span></div>
+<p class="lead">Electronics and the mobile app lead on revenue, but <em>3 in 10 orders</em> end up cancelled or returned.</p>
+<section class="tiles" aria-label="Headline numbers">
+<div class="t"><p class="tl">Revenue</p><p class="tv">$70,261</p><p class="ts">$66.72 per order</p></div>
+<div class="t g"><p class="tl">Valid orders</p><p class="tv">1,053</p><p class="ts">Quantity above 0, rating 1 to 5</p></div>
+<div class="t r"><p class="tl">Revenue lost</p><p class="tv">$20,704</p><p class="ts">29.5% of revenue, 31.1% of orders</p></div>
+<div class="t b"><p class="tl">Average rating</p><p class="tv">2.52 / 5</p><p class="ts">Customer rating, 1 to 5</p></div>
+</section>
+
+<section class="sec">
+<div class="sh"><div class="sn">1</div><h2>Where the money comes from</h2></div>
+<div class="g" style="grid-template-columns:minmax(0,3fr) minmax(0,2fr)">
+<div class="c"><h3>Revenue by category ($K)</h3><div class="w" style="height:250px"><canvas id="cCat" role="img" aria-label="Column chart of revenue by category; Electronics highest at 15.9 thousand dollars">Electronics 15.9K, Home 9.1K, Apparel 8.6K, Accessories 7.1K, Office 6.4K, Toys 4.4K, Garden 4.3K, Footwear 4.2K, Sports 3.8K, Beauty 3.3K, Pet Supplies 3.1K.</canvas></div><p class="n">Electronics brings in about 23% of revenue.</p></div>
+<div class="c"><h3>Revenue share by sales channel</h3><div class="lg" id="lgCh"></div><div class="w" style="height:200px"><canvas id="cCh" role="img" aria-label="Donut chart of revenue by sales channel; mobile app is 40 percent">Mobile app 28.4K, in-store 15.4K, marketplace 14.6K, website 11.9K.</canvas></div><p class="n">Mobile app brings in about 40% of revenue.</p></div>
+</div>
+<div class="g" style="margin-top:12px"><div class="c"><h3>Top 6 products by revenue ($K)</h3><div class="w" style="height:200px"><canvas id="cPr" role="img" aria-label="Bar chart of top six products by revenue; Winter Jacket highest at 6.8 thousand dollars">Winter Jacket 6.8K, Coffee Maker 5.4K, Mechanical Keyboard 4.7K, Running Shoes 4.2K, Sunglasses 3.8K, Blender 3.8K.</canvas></div></div></div>
+</section>
+
+<section class="sec">
+<div class="sh"><div class="sn">2</div><h2>About 3 in 10 orders, worth $20,704, are cancelled or returned</h2></div>
+<div class="g" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+<div class="c"><h3>Revenue in cancelled and returned orders, by category ($K)</h3><div class="w" style="height:250px"><canvas id="cLo" role="img" aria-label="Column chart of lost revenue by category; Electronics highest at 5.4 thousand dollars">Electronics 5.4K, Accessories 2.5K, Home 2.2K, Footwear 1.8K, Toys 1.8K, Apparel 1.5K, Office 1.4K, Beauty 1.4K, Garden 1.2K, Sports 0.9K, Pet Supplies 0.6K.</canvas></div><p class="n">Electronics has the most revenue at risk, about a quarter of the total.</p></div>
+<div class="c"><h3>Order outcome by sales channel (% of orders)</h3><div class="lg" id="lgMx"></div><div class="w" style="height:190px"><canvas id="cMx" role="img" aria-label="Stacked bar chart of order outcome by channel; website has the highest cancelled and returned share at about 39 percent, in-store the lowest at about 28 percent">Website: delivered 17.7, in progress 43.6, cancelled 18.2, returned 20.4. Marketplace: 24.0, 42.6, 18.0, 15.3. Mobile app: 25.3, 45.6, 14.6, 14.4. In-store: 29.4, 42.9, 13.9, 13.9.</canvas></div><p class="n">Website has the highest cancelled and returned share (about 39%), in-store the lowest (about 28%).</p></div>
+</div>
+</section>
+
+<section class="sec">
+<div class="sh"><div class="sn">3</div><h2>Ratings are low, and discounts do not lift order value</h2></div>
+<div class="g" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+<div class="c"><h3>Rating distribution (number of orders)</h3><div class="w" style="height:220px"><canvas id="cRt" role="img" aria-label="Column chart of ratings: 1 star 143, 2 stars 556, 3 stars 127, 4 stars 114, 5 stars 113">Rating 1: 143, rating 2: 556, rating 3: 127, rating 4: 114, rating 5: 113.</canvas></div><p class="n">More than half of all ratings (53%) are exactly 2.</p></div>
+<div class="c"><h3>Average order value by discount ($)</h3><div class="w" style="height:220px"><canvas id="cAo" role="img" aria-label="Column chart of average order value by discount level; full-price orders average 69.8 dollars, discounted levels 56.6 to 65.5 dollars">0%: 69.8, 5%: 56.6, 10%: 63.6, 15%: 65.5, 20%: 62.5.</canvas></div><p class="n">Discounted orders are worth less on average than full-price orders. Based on 100 to 635 orders per level.</p></div>
+</div>
+</section>
+<footer>Figures use the 1,053 valid orders out of 1,472 records. Records with a quantity of zero or below, or a rating above 5, were excluded as invalid. Spellings of category and sales channel were merged (for example, "app" into "mobile app"). Revenue is the calculated order total. In progress means pending, processing or shipped. Built with Python (pandas).</footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const D={"cat": [["Electronics", "Home", "Apparel", "Accessories", "Office", "Toys", "Garden", "Footwear", "Sports", "Beauty", "Pet Supplies"], [15903, 9127, 8559, 7059, 6430, 4366, 4348, 4206, 3807, 3343, 3113]], "catl": [["Electronics", "Accessories", "Home", "Footwear", "Toys", "Apparel", "Office", "Beauty", "Garden", "Sports", "Pet Supplies"], [5387, 2483, 2163, 1807, 1785, 1524, 1432, 1429, 1171, 912, 610]], "ch": [["Mobile App", "In-store", "Marketplace", "Website"], [28384, 15411, 14595, 11870]], "prod": [["Winter Jacket", "Coffee Maker", "Mechanical Keyboard", "Running Shoes", "Sunglasses", "Blender"], [6810, 5373, 4679, 4206, 3827, 3754]], "mix": {"rows": ["Website", "Marketplace", "Mobile App", "In-store"], "cols": ["Delivered", "In progress", "Cancelled", "Returned"], "vals": [[17.7, 43.6, 18.2, 20.4], [24.0, 42.6, 18.0, 15.3], [25.3, 45.6, 14.6, 14.4], [29.4, 42.9, 13.9, 13.9]]}, "aov": [["0%", "5%", "10%", "15%", "20%"], [69.8, 56.6, 63.6, 65.5, 62.5], [635, 109, 105, 104, 100]], "rd": [143, 556, 127, 114, 113]};
+const cs=getComputedStyle(document.documentElement),v=n=>cs.getPropertyValue(n).trim();
+const ink=v('--ink'),mut=v('--mut'),card=v('--card'),A=v('--a'),B=v('--b'),R=v('--r'),LO=v('--lo'),G=v('--g');
+const font='12px Manrope,sans-serif';
+const lum=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const r=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255).map(c=>c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4));return .2126*r[0]+.7152*r[1]+.0722*r[2]};
+const onc=h=>lum(h)>.35?'#10201c':'#ffffff';
+const usd=x=>'$'+(x/1000).toFixed(1)+'K', usd0=x=>'$'+x.toFixed(1);
+const ax={grid:{display:false},border:{display:false},ticks:{color:mut,font:{size:11},autoSkip:false,maxRotation:50}};
+if(window.Chart){
+function col(id,labels,data,fmt,hi,color,th){
+ new Chart(document.getElementById(id),{type:'bar',
+ plugins:[{id:'cv',afterDatasetsDraw(ch){const x=ch.ctx;ch.getDatasetMeta(0).data.forEach((b,i)=>{x.save();x.fillStyle=ink;x.font=font;x.textAlign='center';x.textBaseline='bottom';x.fillText(fmt(data[i]),b.x,b.y-4);x.restore();});}}],
+ data:{labels:labels,datasets:[{data:data,backgroundColor:data.map((d,i)=>hi.includes(i)?color:LO),borderRadius:{topLeft:4,topRight:4},barThickness:th}]},
+ options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}}},
+ scales:{x:ax,y:{display:false,min:0}}}});
+}
+function hbar(id,labels,data,fmt,color){
+ new Chart(document.getElementById(id),{type:'bar',
+ plugins:[{id:'hv',afterDatasetsDraw(ch){const x=ch.ctx;ch.getDatasetMeta(0).data.forEach((b,i)=>{x.save();x.fillStyle=ink;x.font=font;x.textAlign='left';x.textBaseline='middle';x.fillText(fmt(data[i]),b.x+6,b.y);x.restore();});}}],
+ data:{labels:labels,datasets:[{data:data,backgroundColor:data.map((d,i)=>i===0?color:LO),borderRadius:{topRight:4,bottomRight:4},barThickness:18}]},
+ options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{right:46}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.x)}}},
+ scales:{x:{display:false,min:0},y:{grid:{display:false},border:{display:false},ticks:{color:mut,font:{size:12}}}}}});
+}
+col('cCat',D.cat[0],D.cat[1],usd,[0],A,28);
+col('cLo',D.catl[0],D.catl[1],usd,[0],R,28);
+hbar('cPr',D.prod[0],D.prod[1],usd,A);
+col('cRt',['1','2','3','4','5'],D.rd,x=>String(x),[1],A,44);
+col('cAo',D.aov[0],D.aov[1],usd0,[0],A,44);
+const chCol=[A,B,G,LO], tot=D.ch[1].reduce((a,b)=>a+b,0);
+document.getElementById('lgCh').innerHTML=D.ch[0].map((n,i)=>'<span><i style="background:'+chCol[i]+'"></i>'+n+' '+Math.round(D.ch[1][i]/tot*100)+'%</span>').join('');
+new Chart(document.getElementById('cCh'),{type:'doughnut',data:{labels:D.ch[0],datasets:[{data:D.ch[1],backgroundColor:chCol,borderColor:card,borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': '+usd(c.parsed)}}}}});
+const mc=[A,LO,B,R];
+document.getElementById('lgMx').innerHTML=D.mix.cols.map((n,i)=>'<span><i style="background:'+mc[i]+'"></i>'+n+'</span>').join('');
+new Chart(document.getElementById('cMx'),{type:'bar',
+ plugins:[{id:'mv',afterDatasetsDraw(ch){const x=ch.ctx;ch.data.datasets.forEach((d,s)=>{ch.getDatasetMeta(s).data.forEach((b,i)=>{const w=Math.abs(b.base-b.x);if(w<26)return;x.save();x.fillStyle=onc(s===1?(cs.getPropertyValue('--card').trim()==='#fff'?'#c6d3ce':'#2b3f3a'):mc[s]);x.font=font;x.textAlign='center';x.textBaseline='middle';x.fillText(d.data[i].toFixed(0)+'%',(b.x+b.base)/2,b.y);x.restore();});});}}],
+ data:{labels:D.mix.rows,datasets:D.mix.cols.map((n,s)=>({label:n,data:D.mix.vals.map(r=>r[s]),backgroundColor:mc[s],borderColor:card,borderWidth:2,barThickness:26}))},
+ options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.x.toFixed(1)+'%'}}},
+ scales:{x:{stacked:true,display:false,min:0,max:100},y:{stacked:true,grid:{display:false},border:{display:false},ticks:{color:mut,font:{size:12}}}}}});
+}
+</script>
+</body>
+</html>
