@@ -10,5 +10,9 @@ Analysis of sales orders, return rates and lost revenue by product, region, paym
 Analysis of e-commerce revenue, losses and customer ratings.
 [View live dashboard](https://quadriarshad4444-cmyk.github.io/sales-analysis/E-commerce%20performance.html)
 
+
+### 3. Student Performance Dashboard
+Analysis of student performance.
+[View live dashboard](https://quadriarshad4444-cmyk.github.io/sales-analysis/student_dashboard.html)
 ## Tools
 Python, SQL, Power BI
