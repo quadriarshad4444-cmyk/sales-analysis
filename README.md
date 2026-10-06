@@ -12,4 +12,3 @@ Analysis of e-commerce revenue, losses and customer ratings.
 
 ## Tools
 Python, SQL, Power BI
-https://github.com/quadriarshad4444-cmyk/sales-analysis/blob/main/student_dashboard.html
