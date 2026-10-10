@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Hospital Patient Analysis Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#eef3fb;--card:#fff;--ink:#0f2742;--mut:#64748b;--line:#e3eaf5;--blue:#2563eb;--teal:#0d9488;--navy:#0b1f3a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);font:14px/1.5 "Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 400px at 100% 0,#d7f3ef 0,transparent 60%),radial-gradient(900px 400px at 0 0,#dbe7ff 0,transparent 55%),var(--bg);counter-reset:sec}
+.wrap{max-width:1280px;margin:auto;padding:20px 20px 44px}
+header{background:linear-gradient(120deg,#0b1f3a 0,#12408a 55%,#0d9488 130%);color:#fff;border-radius:20px;padding:30px 32px;position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(18,64,138,.28)}
+header:after{content:"";position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.07)}
+header .tag{display:inline-block;background:rgba(255,255,255,.16);border-radius:999px;padding:3px 12px;font-size:12px;letter-spacing:.05em;margin-bottom:10px}
+header h1{margin:0;font-size:30px;letter-spacing:-.02em}header p{margin:8px 0 0;max-width:720px;color:#cfe0f7}
+.bar{background:rgba(255,255,255,.85);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:18px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px 24px;box-shadow:0 4px 16px rgba(15,39,66,.06)}
+.sl b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin-bottom:6px}
+.chip{display:inline-block;border:1px solid var(--line);background:#f4f7fc;color:var(--ink);border-radius:999px;padding:4px 12px;margin:0 5px 5px 0;font-size:12px;cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--blue);transform:translateY(-1px)}
+.chip.on{background:linear-gradient(120deg,var(--blue),var(--teal));border-color:transparent;color:#fff;box-shadow:0 3px 8px rgba(37,99,235,.3)}
+.reset{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;color:var(--mut);font-size:12px;border-top:1px dashed var(--line);padding-top:10px}
+.reset button{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:7px 16px;cursor:pointer;font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;gap:14px;align-items:center;box-shadow:0 6px 18px rgba(15,39,66,.07)}
+.kpi i{font-style:normal;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,#dbe7ff,#d4f3ee);flex:none}
+.kpi span{font-size:12px;color:var(--mut)}.kpi div{font-size:26px;font-weight:800;line-height:1.15;letter-spacing:-.02em}
+.ins{background:linear-gradient(135deg,#fff,#f0fbf9);border:1px solid #cdeee9;border-radius:16px;padding:16px 20px;margin-top:14px;box-shadow:0 6px 18px rgba(13,148,136,.08)}
+.ins h3{margin:0 0 8px;font-size:15px}.ins ul{margin:0;padding-left:18px;columns:2 340px}.ins li{margin:4px 0}.ins li::marker{color:var(--teal)}.ins small{color:var(--mut);display:block;margin-top:10px}
+h2{font-size:18px;margin:34px 0 14px;display:flex;align-items:center;gap:10px;letter-spacing:-.01em}
+h2:before{counter-increment:sec;content:counter(sec);width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--teal));color:#fff;font-size:14px;display:grid;place-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:16px;padding:16px 18px;box-shadow:0 6px 18px rgba(15,39,66,.06);transition:.2s}
+.card:nth-child(even){border-top-color:var(--teal)}.card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(15,39,66,.12)}
+.card h4{margin:0 0 2px;font-size:14.5px}.card small{color:var(--mut);display:block;margin-bottom:10px;font-size:12px}
+.cv{position:relative;height:260px}
+footer{margin-top:30px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:14px}
+</style></head><body><div class="wrap">
+<header><span class="tag">HEALTHCARE ANALYTICS</span><h1>Hospital Patient Analysis Dashboard</h1><p>Demographics, geography, insurance coverage and blood groups across 200 recorded patients. Descriptive patterns only; no causal claims.</p></header>
+<div class="bar" id="slicers"></div>
+<div class="kpis" id="kpis"></div>
+<div class="ins"><h3>Insight callouts <span style="font-weight:400;color:var(--mut)">(recalculated for the current selection)</span></h3><ul id="ins"></ul><small>These are patterns in the recorded dataset. They do not show that age, gender, city or blood group causes insurance status.</small></div>
+<h2>Patient demographics</h2><div class="grid">
+<div class="card"><h4>Patients by age group</h4><small>Count of patients</small><div class="cv"><canvas id="c_ag"></canvas></div></div>
+<div class="card"><h4>Gender distribution</h4><small>Count of patients</small><div class="cv"><canvas id="c_g"></canvas></div></div>
+<div class="card"><h4>Average age by gender</h4><small>Years</small><div class="cv"><canvas id="c_ga"></canvas></div></div>
+<div class="card"><h4>Patients by city category</h4><small>Count of patients</small><div class="cv"><canvas id="c_cc"></canvas></div></div></div>
+<h2>Geographic analysis</h2><div class="grid">
+<div class="card"><h4>Patients by city</h4><small>Count of patients, sorted</small><div class="cv"><canvas id="c_c"></canvas></div></div>
+<div class="card"><h4>Insurance coverage by city</h4><small>% of that city's patients who are insured (not a count)</small><div class="cv"><canvas id="c_cv"></canvas></div></div></div>
+<h2>Insurance analysis</h2><div class="grid">
+<div class="card"><h4>Insurance status by age group</h4><small>100% stacked, % within each age group</small><div class="cv"><canvas id="c_ias"></canvas></div></div>
+<div class="card"><h4>Insurance coverage by gender</h4><small>% of each gender insured</small><div class="cv"><canvas id="c_igc"></canvas></div></div>
+<div class="card"><h4>Average age by insurance status</h4><small>Years</small><div class="cv"><canvas id="c_iaa"></canvas></div></div>
+<div class="card"><h4>Insurance coverage by city category</h4><small>% of each category insured</small><div class="cv"><canvas id="c_icc"></canvas></div></div></div>
+<h2>Blood group analysis</h2><div class="grid">
+<div class="card"><h4>Patients by blood group</h4><small>Count of patients, sorted</small><div class="cv"><canvas id="c_b"></canvas></div></div>
+<div class="card"><h4>Rh factor</h4><small>Count of patients</small><div class="cv"><canvas id="c_rh"></canvas></div></div>
+<div class="card"><h4>Patients by blood group type</h4><small>Count of patients</small><div class="cv"><canvas id="c_bt"></canvas></div></div>
+<div class="card"><h4>Insurance status by blood group</h4><small>100% stacked, % within each blood group</small><div class="cv"><canvas id="c_bi"></canvas></div></div></div>
+<footer>Source: hospital_data.xlsx (200 unique PatientIDs). Age groups: Child 0-12, Teenager 13-19, Young Adult 20-35, Adult 36-59, Senior 60+. City category: Pune Area = Pune, Nigdi, Chinchwad; Other = Akurdi, Hinjewadi, Pimpri. Coverage % always uses the selected group's own patient count as denominator. Small groups after filtering give unstable percentages.</footer>
+</div>
+<script>
+const RAW=[["Male",36,"B-","Pune","Yes"],["Male",5,"A+","Pune","Yes"],["Male",84,"AB+","Nigdi","No"],["Male",55,"O-","Pune","Yes"],["Female",49,"A-","Chinchwad","No"],["Male",16,"AB+","Akurdi","No"],["Female",9,"A+","Pune","No"],["Male",49,"O+","Hinjewadi","No"],["Male",27,"O+","Hinjewadi","Yes"],["Male",32,"B+","Nigdi","No"],["Male",30,"A+","Chinchwad","No"],["Female",73,"O-","Hinjewadi","No"],["Female",34,"B+","Hinjewadi","No"],["Female",47,"B-","Akurdi","No"],["Male",20,"B+","Hinjewadi","No"],["Male",77,"AB-","Chinchwad","Yes"],["Male",83,"O-","Chinchwad","No"],["Male",34,"B+","Pimpri","No"],["Male",21,"A+","Chinchwad","No"],["Male",40,"B-","Pune","Yes"],["Male",69,"B+","Hinjewadi","No"],["Male",78,"AB+","Akurdi","Yes"],["Female",84,"O-","Akurdi","No"],["Male",9,"O-","Akurdi","Yes"],["Male",81,"A+","Pimpri","Yes"],["Female",31,"O+","Nigdi","Yes"],["Male",61,"B-","Nigdi","No"],["Male",85,"AB+","Nigdi","No"],["Female",84,"A-","Nigdi","No"],["Male",25,"AB-","Nigdi","Yes"],["Female",10,"AB-","Akurdi","Yes"],["Male",12,"B-","Nigdi","No"],["Female",8,"B+","Pimpri","No"],["Female",55,"AB-","Pune","No"],["Male",70,"A+","Chinchwad","Yes"],["Male",65,"B+","Akurdi","Yes"],["Male",9,"B-","Pimpri","Yes"],["Male",54,"O-","Pune","No"],["Male",17,"O+","Chinchwad","Yes"],["Male",73,"A-","Akurdi","Yes"],["Female",9,"B-","Chinchwad","Yes"],["Female",39,"A+","Akurdi","No"],["Male",15,"A-","Akurdi","Yes"],["Female",27,"O-","Hinjewadi","No"],["Female",12,"AB+","Chinchwad","Yes"],["Male",82,"O+","Hinjewadi","No"],["Female",15,"A-","Pune","Yes"],["Female",19,"AB+","Pimpri","No"],["Female",27,"B-","Pimpri","No"],["Female",20,"B-","Pune","No"],["Male",43,"AB+","Hinjewadi","Yes"],["Female",14,"AB+","Nigdi","Yes"],["Male",40,"B-","Pimpri","Yes"],["Female",9,"O+","Hinjewadi","No"],["Female",34,"B+","Chinchwad","Yes"],["Male",45,"O-","Akurdi","Yes"],["Female",33,"A+","Nigdi","Yes"],["Male",9,"O-","Chinchwad","Yes"],["Female",86,"AB+","Nigdi","No"],["Male",86,"AB+","Hinjewadi","Yes"],["Female",1,"O+","Pune","No"],["Female",57,"B-","Nigdi","Yes"],["Male",85,"O-","Pune","No"],["Male",4,"A+","Nigdi","Yes"],["Female",74,"B-","Hinjewadi","No"],["Female",19,"A+","Pimpri","No"],["Male",67,"AB-","Akurdi","Yes"],["Male",60,"O-","Nigdi","No"],["Female",61,"AB-","Pune","No"],["Female",57,"A-","Chinchwad","Yes"],["Female",70,"A-","Pune","Yes"],["Female",28,"A-","Nigdi","No"],["Female",27,"AB+","Akurdi","Yes"],["Female",46,"O+","Nigdi","No"],["Male",35,"AB+","Pimpri","No"],["Female",22,"AB-","Akurdi","Yes"],["Female",85,"A+","Hinjewadi","No"],["Male",7,"O+","Chinchwad","Yes"],["Female",49,"O+","Nigdi","No"],["Male",70,"A+","Pune","Yes"],["Male",26,"A+","Pune","Yes"],["Male",15,"B-","Hinjewadi","No"],["Female",78,"A-","Pune","No"],["Male",40,"AB+","Hinjewadi","Yes"],["Male",81,"B-","Hinjewadi","No"],["Male",45,"AB+","Chinchwad","Yes"],["Female",63,"A-","Chinchwad","No"],["Male",67,"O+","Akurdi","No"],["Female",76,"O+","Pune","Yes"],["Female",60,"AB+","Pimpri","No"],["Female",28,"O-","Chinchwad","No"],["Female",36,"A+","Pune","Yes"],["Male",72,"B-","Nigdi","No"],["Female",38,"B-","Hinjewadi","Yes"],["Female",61,"O-","Hinjewadi","No"],["Female",40,"O+","Pimpri","Yes"],["Female",69,"B+","Pune","No"],["Female",77,"O+","Pune","No"],["Male",39,"A+","Akurdi","Yes"],["Female",71,"O+","Pune","No"],["Male",37,"AB-","Nigdi","No"],["Male",62,"A-","Pimpri","No"],["Female",81,"A+","Pune","No"],["Male",72,"AB+","Akurdi","Yes"],["Female",39,"AB+","Akurdi","Yes"],["Male",28,"O+","Pimpri","Yes"],["Male",10,"B+","Nigdi","No"],["Female",30,"O+","Chinchwad","No"],["Male",81,"B-","Pimpri","Yes"],["Male",10,"A+","Chinchwad","No"],["Female",89,"O+","Nigdi","No"],["Female",77,"A+","Hinjewadi","No"],["Female",30,"A+","Hinjewadi","No"],["Male",67,"AB-","Pune","No"],["Female",45,"AB+","Chinchwad","Yes"],["Male",89,"AB-","Hinjewadi","No"],["Male",41,"O+","Pimpri","No"],["Male",53,"A+","Akurdi","No"],["Female",27,"O+","Pune","No"],["Female",4,"B-","Pune","No"],["Male",12,"B-","Nigdi","Yes"],["Male",38,"O+","Nigdi","No"],["Male",19,"AB+","Akurdi","Yes"],["Male",44,"O+","Pimpri","No"],["Female",85,"AB-","Nigdi","No"],["Female",70,"AB+","Chinchwad","Yes"],["Male",30,"AB+","Chinchwad","No"],["Female",84,"B+","Pimpri","Yes"],["Female",13,"AB-","Hinjewadi","Yes"],["Female",61,"O+","Akurdi","No"],["Male",69,"AB+","Hinjewadi","No"],["Male",31,"O+","Hinjewadi","Yes"],["Female",13,"AB-","Hinjewadi","No"],["Male",8,"O+","Chinchwad","No"],["Male",53,"B+","Pune","Yes"],["Female",31,"AB-","Pune","Yes"],["Female",33,"A+","Nigdi","No"],["Male",45,"O+","Nigdi","No"],["Female",50,"AB-","Pune","No"],["Female",90,"O+","Hinjewadi","No"],["Female",88,"A+","Hinjewadi","No"],["Female",46,"B-","Pune","No"],["Male",83,"A+","Nigdi","Yes"],["Female",38,"O-","Nigdi","Yes"],["Male",47,"O+","Pune","No"],["Female",44,"A-","Pimpri","Yes"],["Male",47,"A-","Nigdi","Yes"],["Female",59,"O-","Hinjewadi","No"],["Female",87,"B-","Pimpri","No"],["Male",60,"O+","Nigdi","Yes"],["Male",39,"AB-","Pimpri","Yes"],["Male",48,"AB+","Hinjewadi","Yes"],["Female",79,"AB+","Pimpri","No"],["Male",31,"O-","Hinjewadi","No"],["Female",36,"B-","Nigdi","Yes"],["Male",7,"O-","Pune","Yes"],["Male",76,"B-","Pune","No"],["Male",36,"B+","Akurdi","No"],["Male",4,"B+","Chinchwad","Yes"],["Female",34,"A+","Hinjewadi","No"],["Male",58,"O-","Akurdi","Yes"],["Female",79,"A+","Hinjewadi","No"],["Female",62,"AB+","Hinjewadi","Yes"],["Female",11,"O-","Pune","Yes"],["Male",82,"O-","Akurdi","No"],["Female",56,"A-","Hinjewadi","Yes"],["Male",30,"AB+","Nigdi","No"],["Female",55,"O-","Chinchwad","No"],["Male",12,"A-","Nigdi","Yes"],["Female",8,"O-","Pimpri","No"],["Female",7,"O+","Chinchwad","No"],["Male",28,"B+","Nigdi","Yes"],["Male",48,"A-","Chinchwad","Yes"],["Female",79,"A+","Hinjewadi","No"],["Male",90,"O+","Chinchwad","Yes"],["Male",85,"AB+","Pune","Yes"],["Male",49,"AB+","Chinchwad","Yes"],["Female",42,"A-","Pune","Yes"],["Male",57,"AB+","Akurdi","No"],["Female",66,"A-","Nigdi","Yes"],["Female",68,"O+","Pune","No"],["Male",39,"B-","Pune","No"],["Female",1,"AB-","Nigdi","Yes"],["Male",30,"O-","Nigdi","Yes"],["Female",10,"O-","Nigdi","No"],["Female",52,"A+","Pune","No"],["Female",14,"B-","Akurdi","No"],["Male",44,"B-","Pune","Yes"],["Male",25,"O-","Hinjewadi","Yes"],["Male",33,"B-","Akurdi","Yes"],["Male",64,"AB-","Akurdi","No"],["Female",57,"A-","Nigdi","No"],["Female",46,"A-","Nigdi","No"],["Male",37,"A-","Pimpri","No"],["Female",6,"AB-","Akurdi","Yes"],["Female",65,"B+","Nigdi","Yes"],["Female",83,"B+","Pune","No"],["Female",79,"B+","Chinchwad","No"],["Female",87,"A+","Hinjewadi","No"],["Male",72,"AB+","Chinchwad","Yes"]]; // [gender,age,bloodgroup,city,insured]
+const AGO=['Child','Teenager','Young Adult','Adult','Senior'],PA=['Pune','Nigdi','Chinchwad'];
+const D=RAW.map(r=>({g:r[0],a:r[1],b:r[2],c:r[3],i:r[4]==='Yes'?'Insured':'Uninsured',
+ ag:r[1]<=12?AGO[0]:r[1]<=19?AGO[1]:r[1]<=35?AGO[2]:r[1]<=59?AGO[3]:AGO[4],
+ cc:PA.includes(r[3])?'Pune Area':'Other',rh:r[2].endsWith('+')?'Positive':'Negative',bt:r[2].replace(/[+-]/,'')}));
+const U=k=>[...new Set(D.map(d=>d[k]))];
+const SL=[['g','Gender',U('g').sort()],['ag','Age group',AGO],['c','City',U('c').sort()],['cc','City category',['Pune Area','Other']],['i','Insurance status',['Insured','Uninsured']],['b','Blood group',U('b').sort()],['rh','Rh factor',['Positive','Negative']]];
+const F={};SL.forEach(s=>F[s[0]]=new Set());
+const BL='#2563eb',TL='#0d9488',LB='#bcd2f7',LT='#99e0d8';
+const pct=(n,d)=>d?n/d*100:null,f1=v=>v==null?'n/a':v.toFixed(1)+'%',f2=v=>v==null?'n/a':v.toFixed(1)+' yrs';
+const avg=r=>r.length?r.reduce((s,d)=>s+d.a,0)/r.length:null;
+const sel=()=>D.filter(d=>SL.every(s=>!F[s[0]].size||F[s[0]].has(d[s[0]])));
+function drawSlicers(){const el=document.getElementById('slicers');el.innerHTML='';
+ SL.forEach(([k,t,o])=>{const w=document.createElement('div');w.className='sl';w.innerHTML='<b>'+t+'</b>';
+  o.forEach(v=>{const c=document.createElement('span');c.className='chip'+(F[k].has(v)?' on':'');c.textContent=v;
+   c.onclick=()=>{F[k].has(v)?F[k].delete(v):F[k].add(v);drawSlicers();update()};w.appendChild(c)});el.appendChild(w)});
+ const r=document.createElement('div');r.className='reset';r.innerHTML='<span id="cnt"></span><button>Reset filters</button>';
+ r.querySelector('button').onclick=()=>{SL.forEach(s=>F[s[0]].clear());drawSlicers();update()};el.appendChild(r)}
+const lab={id:'lab',afterDatasetsDraw(ch){const o=ch.options.plugins.lab;if(!o)return;const x=ch.ctx;x.save();x.font='600 11px system-ui';x.textBaseline='middle';
+ ch.data.datasets.forEach((ds,di)=>{ch.getDatasetMeta(di).data.forEach((b,i)=>{const v=ds.data[i];if(v==null)return;const t=FM[ch.canvas.id](v);
+  if(o.stack){if(v<9)return;x.fillStyle='#fff';x.textAlign='center';x.fillText(t,b.x-(b.x-b.base)/2,b.y)}
+  else if(o.h){x.fillStyle='#16324a';x.textAlign='left';x.fillText(t,b.x+5,b.y)}
+  else{x.fillStyle='#16324a';x.textAlign='center';x.textBaseline='bottom';x.fillText(t,b.x,b.y-3)}})});x.restore()}};
+Chart.register(lab);Chart.defaults.font.family='Inter,system-ui,sans-serif';Chart.defaults.color='#64748b';
+const CH={};
+const FM={};function mk(id,type,o={}){FM[id]=o.fmt||(v=>v);const st=o.stack,h=o.h;
+ CH[id]=new Chart(document.getElementById(id),{type,data:{labels:[],datasets:[]},options:{maintainAspectRatio:false,cutout:'64%',indexAxis:h?'y':'x',layout:{padding:{top:16,right:h?40:8}},
+  plugins:{legend:{display:type==='doughnut'||!!st,position:'bottom'},lab:type==='doughnut'?false:{h,stack:st},
+   tooltip:{callbacks:{label:c=>{const m=c.dataset.meta?.[c.dataIndex];const v=c.parsed.y!==undefined&&!h?c.parsed.y:c.parsed.x!==undefined&&type!=='doughnut'?c.parsed.x:c.parsed;
+    return ' '+(c.dataset.label?c.dataset.label+': ':'')+(o.fmt?o.fmt(v):v)+(m?' ('+m+')':'')}}}},
+  scales:type==='doughnut'?{}:{x:{stacked:st,grid:{display:false},max:h&&o.max?o.max:undefined,beginAtZero:true},y:{stacked:st,beginAtZero:true,max:(!h&&o.max)?o.max:undefined,grid:{color:'#eef3f7'}}}}});
+ if(h){CH[id].options.scales.y.grid.display=false;CH[id].options.scales.x.grid={color:'#eef3f7'}}}
+function set(id,labels,sets){const c=CH[id];c.data.labels=labels;c.data.datasets=sets;c.update('none')}
+const cnt=(r,k,o)=>o.map(v=>r.filter(d=>d[k]===v).length);
+const cov=(r,k,o)=>o.map(v=>{const g=r.filter(d=>d[k]===v);return pct(g.filter(d=>d.i==='Insured').length,g.length)});
+const covm=(r,k,o)=>o.map(v=>{const g=r.filter(d=>d[k]===v);return g.filter(d=>d.i==='Insured').length+' of '+g.length+' insured'});
+const bar1=(d,col,meta)=>[{data:d,backgroundColor:col,borderRadius:5,meta}];
+const srt=(r,k)=>U(k).sort((a,b)=>r.filter(d=>d[k]===b).length-r.filter(d=>d[k]===a).length||a.localeCompare(b));
+function stack(id,r,k,o){const ins=o.map(v=>{const g=r.filter(d=>d[k]===v);return pct(g.filter(d=>d.i==='Insured').length,g.length)||0}),has=o.map(v=>r.some(d=>d[k]===v));
+ const un=ins.map((v,i)=>has[i]?100-v:0);const mt=(s)=>o.map(v=>{const g=r.filter(d=>d[k]===v&&d.i===s);return g.length+' patients'});
+ set(id,o,[{label:'Insured',data:ins,backgroundColor:TL,meta:mt('Insured')},{label:'Uninsured',data:un,backgroundColor:LB,meta:mt('Uninsured')}])}
+function update(){const r=sel(),n=r.length,ins=r.filter(d=>d.i==='Insured').length;
+ document.getElementById('cnt').textContent='Showing '+n+' of '+D.length+' patients';
+ document.getElementById('kpis').innerHTML=[['Total patients',n],['Average patient age',n?avg(r).toFixed(2)+' yrs':'n/a'],['Insured patients',ins],['Uninsured patients',n-ins],['Insurance coverage rate',f1(pct(ins,n))]].map((k,i)=>'<div class="kpi"><i>'+['👥','🎂','🛡️','⚠️','📊'][i]+'</i><section style="margin:0"><span>'+k[0]+'</span><div>'+k[1]+'</div></section></div>').join('');
+ const gO=['Female','Male'],ccO=['Pune Area','Other'],cO=srt(r,'c'),bO=srt(r,'b');
+ set('c_ag',AGO,bar1(cnt(r,'ag',AGO),BL));
+ set('c_g',gO,[{data:cnt(r,'g',gO),backgroundColor:[TL,BL],borderWidth:2}]);
+ set('c_ga',gO,bar1(gO.map(v=>avg(r.filter(d=>d.g===v))),[TL,BL]));
+ set('c_cc',ccO,bar1(cnt(r,'cc',ccO),[BL,TL]));
+ set('c_c',cO,bar1(cnt(r,'c',cO),BL));
+ const cc=U('c').sort();set('c_cv',cc,bar1(cov(r,'c',cc),TL,covm(r,'c',cc)));
+ stack('c_ias',r,'ag',AGO);
+ set('c_igc',gO,bar1(cov(r,'g',gO),[TL,BL],covm(r,'g',gO)));
+ set('c_iaa',['Insured','Uninsured'],bar1(['Insured','Uninsured'].map(v=>avg(r.filter(d=>d.i===v))),[TL,LB]));
+ set('c_icc',ccO,bar1(cov(r,'cc',ccO),[BL,TL],covm(r,'cc',ccO)));
+ set('c_b',bO,bar1(cnt(r,'b',bO),BL));
+ set('c_rh',['Positive','Negative'],[{data:cnt(r,'rh',['Positive','Negative']),backgroundColor:[BL,TL],borderWidth:2}]);
+ const bt=['A','B','AB','O'];set('c_bt',bt,bar1(cnt(r,'bt',bt),TL));
+ stack('c_bi',r,'b',U('b').sort());
+ // insights
+ const low=(k,o)=>{const x=o.map(v=>{const g=r.filter(d=>d[k]===v);return{v,n:g.length,p:pct(g.filter(d=>d.i==='Insured').length,g.length)}}).filter(x=>x.n);return x.sort((a,b)=>a.p-b.p)[0]};
+ const top=(k,o)=>{const x=o.map(v=>({v,n:r.filter(d=>d[k]===v).length})).sort((a,b)=>b.n-a.n)[0];return x&&x.n?x:null};
+ const L=[];if(n){L.push('<b>'+f1(pct(n-ins,n))+'</b> of the selected patients are uninsured.');
+  const a=low('ag',AGO),c=low('c',U('c')),tc=top('c',U('c')),tb=top('b',U('b'));
+  if(a)L.push('<b>'+a.v+'</b> has the lowest coverage among age groups shown: <b>'+f1(a.p)+'</b> ('+a.n+' patients).');
+  if(c)L.push('<b>'+c.v+'</b> has the lowest coverage among cities shown: <b>'+f1(c.p)+'</b> ('+c.n+' patients).');
+  if(tc)L.push('<b>'+tc.v+'</b> has the highest patient count: <b>'+tc.n+'</b> records.');
+  if(tb)L.push('<b>'+tb.v+'</b> is the most common blood group: <b>'+tb.n+'</b> records.');
+  L.push('Rh-positive patients make up <b>'+f1(pct(r.filter(d=>d.rh==='Positive').length,n))+'</b> of the selection.')}
+ else L.push('No patients match the current filters.');
+ document.getElementById('ins').innerHTML=L.map(x=>'<li>'+x+'</li>').join('')}
+const P=v=>v==null?'n/a':v.toFixed(1)+'%',Y=v=>v==null?'n/a':v.toFixed(1);
+mk('c_ag','bar');mk('c_g','doughnut');mk('c_ga','bar',{fmt:Y});mk('c_cc','bar');
+mk('c_c','bar',{h:1});mk('c_cv','bar',{fmt:P,max:100});
+mk('c_ias','bar',{h:1,stack:1,fmt:P,max:100});mk('c_igc','bar',{fmt:P,max:100});mk('c_iaa','bar',{fmt:Y});mk('c_icc','bar',{fmt:P,max:100});
+mk('c_b','bar',{h:1});mk('c_rh','doughnut');mk('c_bt','bar');mk('c_bi','bar',{h:1,stack:1,fmt:P,max:100});
+drawSlicers();update();
+</script></body></html>
