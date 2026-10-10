@@ -18,5 +18,6 @@ Analysis of student performance.
 
 ### 4. Hospital Patient Analysis Dashboard
 Analysis of hospital patient data. [View live dashboard](https://quadriarshad4444-cmyk.github.io/sales-analysis/hospital.html)
+
 ## Tools
 Python, SQL, Power BI
